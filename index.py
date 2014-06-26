@@ -20,7 +20,7 @@ class Application(cyclone.web.Application):
             (r'/favicon.ico', cyclone.web.StaticFileHandler, {'path': "./"}),
         ]
         settings = {
-            "WSServerUrl": "ws://pywsserver.herokuapps.com") + "/ws",
+            "WSServerUrl": "ws://pywsserver.herokuapps.com/ws",
             "template_path": Settings.TEMPLATE_PATH,
             "static_path": Settings.STATIC_PATH,
         }
