@@ -15,5 +15,5 @@ class Application(tornado.web.Application):
 if __name__ == '__main__':
     app = Application()
 
-    app.listen(Settings.WSPORT)
+    app.listen(Settings.HTTPPORT)
     tornado.ioloop.IOLoop.instance().start()
