@@ -1,1 +1,1 @@
-cyclone==git-2013042301
+cyclone==1.1
