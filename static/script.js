@@ -31,7 +31,7 @@ window.addEventListener("load", function(event) {
         connectButton.addEventListener('click', function (event) {
 
             try {
-                console.log(userName.value);
+                //console.log(userName.value);
                 connectButton.disabled = true;
                 remoteServer.disabled = true;
                 userName.disabled = true;
