@@ -1,7 +1,7 @@
 Twisted==14.0.0
 pyOpenSSL==0.14
 cffi==0.8.2
-cryptography==0.4
+cryptography==0.2.2
 git+https://github.com/fiorix/cyclone.git
 pycparser==2.10
 six==1.7.2
