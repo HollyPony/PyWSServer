@@ -1,34 +1,37 @@
 import Settings
+
 import WebSocketHandler
 
 import os
 import json
 
-import tornado.ioloop
-import tornado.web
-import tornado.httpserver
+import cyclone.web
+import sys
 
-class Application(tornado.web.Application):
+from twisted.internet import reactor
+from twisted.python import log
+
+class Application(cyclone.web.Application):
     def __init__(self):
         handlers = [
-            (r'/',    IndexHandler),
+            (r'/',    MainHandler),
             (r'/ws',  WebSocketHandler.WebSocketHandler),
             (r'/api', ApiHandler),
-            (r'/favicon.ico', tornado.web.StaticFileHandler, {'path': "./"}),
+            (r'/favicon.ico', cyclone.web.StaticFileHandler, {'path': "./"}),
         ]
         settings = {
-            "WSServerUrl": "ws://localhost:" + str(Settings.HTTPPORT) + "/ws",
+            "WSServerUrl": "ws://pywsserver.herokuapps.com:" + str(Settings.HTTPPORT) + "/ws",
             "template_path": Settings.TEMPLATE_PATH,
             "static_path": Settings.STATIC_PATH,
         }
-        tornado.web.Application.__init__(self, handlers, **settings)
+        cyclone.web.Application.__init__(self, handlers, **settings)
 
-class IndexHandler(tornado.web.RequestHandler):
+class MainHandler(cyclone.web.RequestHandler):
     def get(self):
         self.render("index.html")
 
-class ApiHandler(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
+class ApiHandler(cyclone.web.RequestHandler):
+    @cyclone.web.asynchronous
     def get(self, *args):
         self.finish()
         id = self.get_argument("id")
@@ -38,11 +41,13 @@ class ApiHandler(tornado.web.RequestHandler):
         for c in clients:
             c.write_message(data)
 
-    @tornado.web.asynchronous
+    @cyclone.web.asynchronous
     def post(self):
         pass
 
 if __name__ == '__main__':
     app = Application()
-    app.listen(Settings.HTTPPORT)
-    tornado.ioloop.IOLoop.instance().start()
+    log.startLogging(sys.stdout)
+
+    reactor.listenTCP(Settings.HTTPPORT, app)
+    reactor.run()
