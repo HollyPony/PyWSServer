@@ -1,1 +1,1 @@
-cyclone==1.1
+git+https://github.com/fiorix/cyclone.git@eb2f1122d1be4b1edb15b44669c0d7da69c634c5
