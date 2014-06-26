@@ -97,7 +97,7 @@ window.addEventListener("load", function(event) {
                             var element = document.getElementById(msgObj.userChangeName.id);
                             element.textContent = msgObj.userChangeName.name;
                         }
-                    } catch (e if e instanceof SyntaxError) {
+                    } catch (e) {
                         messageWarning(event.data);
                     }
                 });
