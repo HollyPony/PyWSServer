@@ -17,7 +17,7 @@ class Application(tornado.web.Application):
             (r'/favicon.ico', tornado.web.StaticFileHandler, {'path': "./"}),
         ]
         settings = {
-            "WSServerUrl": "ws://localhost:" + str(Settings.WSPORT) + "/ws",
+            "WSServerUrl": "ws://localhost:" + str(Settings.HTTPPORT) + "/ws",
             "template_path": Settings.TEMPLATE_PATH,
             "static_path": Settings.STATIC_PATH,
         }
@@ -44,8 +44,5 @@ class ApiHandler(tornado.web.RequestHandler):
 
 if __name__ == '__main__':
     app = Application()
-
-    #http_server = tornado.httpserver.HTTPServer(app)
-    #http_server.listen(Settings.HTTPPORT)
-    app.listen(Settings.WSPORT)
+    app.listen(Settings.HTTPPORT)
     tornado.ioloop.IOLoop.instance().start()
