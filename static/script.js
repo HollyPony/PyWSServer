@@ -3,6 +3,8 @@
 /**
  * Created by Raymond Barre on 30/04/2014.
  */
+console.log(location.host)
+
 window.addEventListener("load", function(event) {
     var chatLog = document.getElementById('chatLog');
     var userList = document.getElementById('userList');
