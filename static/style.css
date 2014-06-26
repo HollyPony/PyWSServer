@@ -1,0 +1,73 @@
+#chatLog{
+    overflow: auto;
+    padding: 5px;
+    height:240px;
+
+    border: 1px solid silver;
+    box-shadow: 1px 1px 1px silver inset;
+}
+
+#userList {
+    overflow: auto;
+    margin-top: 0;
+    padding: 5px;
+    height: 240px;
+    vertical-align:top;
+
+    border:1px solid silver;
+    box-shadow: 1px 1px 1px silver inset;
+}
+
+#userList dt{
+	list-style-type : none;
+	margin: 2px 0;
+	border-bottom: 1px dashed silver;
+	font-size : 0.9em;
+}
+
+#userList dt:hover{
+	background-color: #94d6ff;
+}
+
+#userInput{
+	width: 80%;
+}
+
+#footer {
+    background-color: lightblue;
+}
+
+/* ------------------------------------------------------------------------- */
+/* --------------------------- STYLE MESSAGES ------------------------------ */
+/* ------------------------------------------------------------------------- */
+#chatLog p{
+    margin:0;
+	font-size:0.8em;
+}
+
+.userName::after{
+	content: " : ";
+}
+
+.userName{
+	font-size: 1em;
+}
+
+.event {
+    color:#999;
+    font-size: 0.8em;
+}
+.warning{
+    font-weight:bold;
+    color:#CCC;
+}
+
+
+
+
+
+
+
+
+
+

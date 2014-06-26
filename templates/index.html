@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>JWSClient</title>
+
+    <link href="{{ static_url("css/bootstrap.min.css") }}" rel="stylesheet" media="screen">
+    <link href="{{ static_url("style.css") }}" rel="stylesheet" media="screen">
+
+</head>
+<body>
+<div class="container-fluid">
+
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Pulp Project</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">JSWSClient</a></li>
+                    <li><a href="#">PyWSServer</a></li>
+                    <li><a href="#">QWSServer</a></li>
+                    <li><a href="#">QWSClient</a></li>
+                    <li><a href="#">JWSServer</a></li>
+                    <li><a href="#">JWSClient</a></li>
+                </ul>
+                <form class="navbar-form navbar-right hidden" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right hidden">
+                    <li><a href="#">Link</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="row page-header">
+        <div class="col-md-6 col-md-offset-3">
+            <h3>Javascript WebSocket Client <small>Extract from <a href="https://bitbucket.org/Liomka/pulp">Pulp project</a></small></h3>
+        </div>
+    </div>
+
+    <div id="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+
+                <form class="form-inline" role="form">
+                    <div class="form-group">
+                        <label for="remoteServer" class="sr-only">Server Adress</label>
+                        <input id="remoteServer" type="url" class="form-control" placeholder="{{ escape(handler.settings["WSServerUrl"]) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="userName" class="sr-only">User name</label>
+                        <input id="userName" type="text" class="form-control" placeholder="User name">
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="connect">Connect</button>
+                    <button type="button" class="btn btn-primary" id="disconnect">Disconnect</button>
+                    <span   id="status">&nbsp;</span>
+
+                    <button type="submit" class="btn hidden">Sign in</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- #chatLog -->
+
+        <div class="row">
+            <div id="chatLog" class="col-md-5 col-md-offset-3"></div>
+            <dl id="userList" class="col-md-1"></dl>
+        </div>
+
+
+        <div class="row">
+            <div id="footChat" class="col-md-6 col-md-offset-3">
+                <input id="userInput" type="text" />
+                <button id="sendText">Send</button>
+            </div>
+        </div>
+    </div><!-- #container -->
+
+    <div id="footer" class="panel-footer row">
+        <div id="footer-content" class="col-md-6 col-md-offset-3">
+            Source avaible here : <a href="https://bitbucket.org/Liomka/pulp">https://bitbucket.org/Liomka/pulp</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="{{ static_url("js/bootstrap.min.js") }}"></script>
+<script language="javascript" type="text/javascript" src="{{ static_url("script.js") }}"></script>
+</body>
+</html>
