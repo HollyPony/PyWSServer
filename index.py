@@ -1,5 +1,4 @@
 import Settings
-import WebSocketHandler
 
 import os
 import json
@@ -12,7 +11,6 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/',    IndexHandler),
-            (r'/ws',  WebSocketHandler.WebSocketHandler),
             (r'/api', ApiHandler),
             (r'/favicon.ico', tornado.web.StaticFileHandler, {'path': "./"}),
         ]
@@ -47,5 +45,4 @@ if __name__ == '__main__':
 
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(Settings.HTTPPORT)
-    app.listen(Settings.WSPORT)
     tornado.ioloop.IOLoop.instance().start()
