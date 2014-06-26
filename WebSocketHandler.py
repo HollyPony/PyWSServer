@@ -4,6 +4,7 @@ import cyclone.websocket
 
 clients = []
 
+
 class WebSocketHandler(cyclone.websocket.WebSocketHandler):
     def connectionMade(self):
         if self not in clients:
