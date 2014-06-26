@@ -1,9 +1,10 @@
-git://github.com/kennethjiang/heroku-buildpack-python-libffi.git
+git+https://github.com/kennethjiang/heroku-buildpack-python-libffi.git
+Twisted==14.0.0
 Twisted==14.0.0
 pyOpenSSL==0.14
 cffi==0.8.2
 cryptography==0.4
-git://github.com/fiorix/cyclone.git
+git+https://github.com/fiorix/cyclone.git
 pycparser==2.10
 six==1.7.2
 wsgiref==0.1.2
