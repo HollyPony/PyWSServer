@@ -12,7 +12,6 @@ window.addEventListener("load", function(event) {
     var userName = document.getElementById('userName');
     var connectButton = document.getElementById('connect');
     var disconnectButton = document.getElementById('disconnect');
-    var statusSpan = document.getElementById('status');
     var sendTextButton = document.getElementById('sendText');
 
     if (!("WebSocket" in window)) {
@@ -25,7 +24,6 @@ window.addEventListener("load", function(event) {
         disconnectButton.disabled = true;
         sendTextButton.disabled = true;
         userInput.disabled = true;
-        statusSpan.textContent = "Disconnected";
 
         connectButton.addEventListener('click', function (event) {
 
@@ -57,7 +55,6 @@ window.addEventListener("load", function(event) {
                     sendTextButton.disabled = false;
                     userInput.disabled = false;
                     disconnectButton.disabled = false;
-                    statusSpan.textContent = "Connected";
 
                     // I'm glad to meet you, my name is ...
                     socket.send(JSON.stringify({"hello": {"name": userName.value}}))
@@ -74,7 +71,6 @@ window.addEventListener("load", function(event) {
                     userInput.disabled = true;
                     userInput.textContent = "";
                     disconnectButton.disabled = true;
-                    statusSpan.textContent = "Disconnected";
 
                     var element = document.getElementById("userList");
                     while (element.firstChild) {
