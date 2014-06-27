@@ -10,9 +10,40 @@ window.addEventListener("load", function(event) {
     var userInput = $('#userInput');
     var remoteServer = $('#remoteServer');
     var userName = $('#userName');
-    var connectButton = $('#connect');
-    var disconnectButton = $('#disconnect');
+    var toggleConnectionButton = $('#toggleConnectionButton');
     var sendTextButton = $('#sendText');
+
+    var intervalID = null;
+
+    function connected() {
+        intervalID = setInterval(function(){ping();}, 40000);
+        chatLog.prop('disabled', true);
+        userList.prop('disabled', true);
+        remoteServer.prop('disabled', true);
+        userName.prop('disabled', true);
+
+        userInput.prop('disabled', false);
+        sendTextButton.prop('disabled', false);
+
+        toggleConnectionButton.text('Disconnect');
+
+        messageEvent('Connected');
+    }
+
+    function disconnected() {
+        clearInterval(intervalID);
+        chatLog.prop('disabled', false);
+        userList.prop('disabled', false);
+        remoteServer.prop('disabled', false);
+        userName.prop('disabled', false);
+
+        userInput.prop('disabled', true);
+        sendTextButton.prop('disabled', true);
+
+        toggleConnectionButton.text('Connect');
+
+        messageEvent('Disconnected');
+    }
 
     if (!("WebSocket" in window)) {
         $('#chatLog, input, button').fadeOut("slow");
@@ -21,13 +52,14 @@ window.addEventListener("load", function(event) {
 
         var socket;
 
-        disconnectButton.prop('disabled',  true);
-        sendTextButton.prop('disabled',  true);
-        userInput.prop('disabled',  true);
+        disconnected();
 
-        connectButton.click( function (event) {
+        toggleConnectionButton.click( function (event) {
 
-            var intervalID = null;
+            if (socket) {
+                socket.close();
+                return;
+            }
 
             var div = $("#userName").parents("div.form-group");
             if (userName.val() == '') {
@@ -41,40 +73,20 @@ window.addEventListener("load", function(event) {
             }
 
             try {
-                connectButton.prop('disabled',  true);
-                remoteServer.prop('disabled',  true);
-                userName.prop('disabled',  true);
-
                 if (remoteServer.val())
                     socket = new WebSocket(remoteServer.val());
                 else
                     socket = new WebSocket(remoteServer.attr("placeholder"));
 
                 socket.onopen = function (event) {
-                    sendTextButton.prop('disabled',  false);
-                    userInput.prop('disabled',  false);
-                    disconnectButton.prop('disabled',  false);
-
-                    // I'm glad to meet you, my name is ...
                     socket.send(JSON.stringify({"hello": {"name": userName.val()}}));
-
-                    messageEvent('Connected');
                 };
 
                 socket.onclose = function (event) {
-                    clearInterval(intervalID);
-                    connectButton.prop('disabled',  false);
-                    remoteServer.prop('disabled',  false);
-                    userName.prop('disabled',  false);
-                    sendTextButton.prop('disabled',  true);
-                    userInput.prop('disabled',  true);
-                    userInput.textContent = "";
-                    disconnectButton.prop('disabled',  true);
-
                     userList.empty();
 
-                    console.log(event.code);
-                    messageEvent('Disconnected');
+                    disconnected();
+                    socket = null;
                 };
 
                 socket.onmessage = function (event) {
@@ -89,7 +101,6 @@ window.addEventListener("load", function(event) {
                         } else if (msgObj.userList) {
                             msgObj.userList.forEach(function (user) {
                                 userList.append($(document.createElement('dt')).text(user.name).attr('id', user.id));
-                                intervalID = setInterval(function(){ping();}, 40000);
                             });
                         } else if (msgObj.userConnected) {
                             var user = msgObj.userConnected;
@@ -107,16 +118,10 @@ window.addEventListener("load", function(event) {
                     }
                 };
 
-                disconnectButton.click(function (event) {
-                    socket.close();
-                });
-
             } catch (exception) {
-                connectButton.prop('disabled',  false);
-                remoteServer.prop('disabled',  false);
-                userName.prop('disabled',  false);
-                messageError('Error: ' + exception)
-                clearInterval(intervalID);
+                messageError('Error: ' + exception);
+                disconnected();
+                socket = null;
             }
         });
 
