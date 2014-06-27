@@ -188,6 +188,6 @@ window.addEventListener("load", function(event) {
 
     function appendMessage(blocToAppend) {
         chatLog.append(blocToAppend);
-        chatLog.scrollTop = chatLog.scrollHeight;
+        chatLog.animate({scrollTop: chatLog[0].scrollHeight}, 'slow');
     }
 })
