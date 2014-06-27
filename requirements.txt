@@ -1,4 +1,4 @@
-svn+svn://svn.twistedmatrix.com/svn/Twisted/trunk#egg=twisted
+Twisted==14
 pyOpenSSL==0.14
 cffi==0.8.2
 cryptography==0.2.2
