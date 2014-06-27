@@ -32,7 +32,7 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
             self.sendMessage(msg)
 
             # Notify client connection
-            msg = json.dumps({"userConnected": {"id": str(client.id),
+            msg = json.dumps({"userConnected": {"id": str(self.id),
                                                 "name": clients[self].name}})
             for client in clients:
                 if client is not self:
@@ -49,5 +49,11 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
                 client.sendMessage(msg)
 
     def connectionLost(self, reason):
+        #Notify i am disconnected
+        msg = json.dumps({"userDisconnected": {"id": str(self.id)}})
+        for client in clients:
+            if client is not self:
+                client.sendMessage(msg)
+
         if self in clients:
             clients.pop(self)
