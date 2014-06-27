@@ -1,6 +1,7 @@
 #chatLog, #userList{
     overflow: auto;
     height: 240px;
+    margin-bottom: 0;
 }
 
 #userList dt:hover{
