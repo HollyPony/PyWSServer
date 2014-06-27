@@ -1,4 +1,12 @@
-#chatLog, #userList{
+#navbarHead {
+    margin-bottom: 10px;
+}
+
+#title {
+    margin-top: 0;
+}
+
+#chatLog, #userList {
     overflow: auto;
     height: 240px;
     margin-bottom: 0;
