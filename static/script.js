@@ -80,7 +80,11 @@ window.addEventListener("load", function(event) {
                 socket.onmessage = function (event) {
                     try {
                         var msgObj = JSON.parse(event.data);
-                        if (msgObj.message) {
+                        if (msgObj == "accepted") {
+                            connected();
+                        } else if (msgObj == "rejected") {
+                            socket.close();
+                        } else if (msgObj.message) {
                             messageReceived(msgObj.message);
                         } else if (msgObj.userList) {
                             msgObj.userList.forEach(function (user) {

@@ -22,6 +22,7 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
         elif "hello" in jmessage:
             # Test if User is valid
             clients[self] = User.User(jmessage["hello"]["name"])
+            self.sendMessage(json.dumps("accepted"))
 
             # Send client list
             jclients = []
@@ -39,7 +40,8 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
                     client.sendMessage(msg)
 
         if clients[self] is None:
-            self.connectionLost(self)
+            self.sendMessage(json.dumps('rejected'))
+            clients.pop(self)
 
         if "message" in jmessage:
             msg = json.dumps({"message": {"content": jmessage["message"]["content"],
