@@ -29,6 +29,8 @@ window.addEventListener("load", function(event) {
 
         connectButton.addEventListener('click', function (event) {
 
+            var intervalID = null;
+
             if (userName.value == '') {
                 var div = $("#userName").parents("div.form-group");
                 div.removeClass("has-success");
@@ -64,6 +66,7 @@ window.addEventListener("load", function(event) {
                 };
 
                 socket.onclose = function (event) {
+                    clearInterval(intervalID);
                     connectButton.disabled = false;
                     remoteServer.disabled = false;
                     userName.disabled = false;
@@ -96,6 +99,7 @@ window.addEventListener("load", function(event) {
                                 li.id = user.id;
 
                                 userList.appendChild(li);
+                                intervalID = setInterval(function(){ping();}, 40000);
                             });
                         } else if (msgObj.userConnected) {
                             var user = msgObj.userConnected;
@@ -125,6 +129,7 @@ window.addEventListener("load", function(event) {
                 remoteServer.disabled = false;
                 userName.disabled = false;
                 messageError('Error: ' + exception)
+                clearInterval(intervalID);
             }
         });
 
@@ -139,6 +144,9 @@ window.addEventListener("load", function(event) {
         });
     }
 
+    function ping() {
+        socket.send(JSON.stringify("ping"));
+    }
 
     function send() {
         var text = userInput.value;

@@ -16,7 +16,10 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
 
     def messageReceived(self, message):
         jmessage = json.loads(message)
-        if "hello" in jmessage:
+        if "ping" in jmessage:
+            pass
+
+        elif "hello" in jmessage:
             # Test if User is valid
             clients[self] = User.User(jmessage["hello"]["name"])
 
