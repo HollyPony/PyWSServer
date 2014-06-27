@@ -47,9 +47,9 @@ window.addEventListener("load", function(event) {
                 userName.disabled = true;
 
                 if (remoteServer.value)
-                    socket = new ReconnectingWebSocket(remoteServer.value);
+                    socket = new WebSocket(remoteServer.value);
                 else
-                    socket = new ReconnectingWebSocket(remoteServer.getAttribute("placeholder"));
+                    socket = new WebSocket(remoteServer.getAttribute("placeholder"));
 
                 socket.onopen = function (event) {
                     sendTextButton.disabled = false;
