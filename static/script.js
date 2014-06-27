@@ -5,14 +5,14 @@
  */
 
 window.addEventListener("load", function(event) {
-    var chatLog = document.getElementById('chatLog');
-    var userList = document.getElementById('userList');
-    var userInput = document.getElementById('userInput');
-    var remoteServer = document.getElementById('remoteServer');
-    var userName = document.getElementById('userName');
-    var connectButton = document.getElementById('connect');
-    var disconnectButton = document.getElementById('disconnect');
-    var sendTextButton = document.getElementById('sendText');
+    var chatLog = $('#chatLog');
+    var userList = $('#userList');
+    var userInput = $('#userInput');
+    var remoteServer = $('#remoteServer');
+    var userName = $('#userName');
+    var connectButton = $('#connect');
+    var disconnectButton = $('#disconnect');
+    var sendTextButton = $('#sendText');
 
     if (!("WebSocket" in window)) {
         $('#chatLog, input, button').fadeOut("slow");
@@ -21,89 +21,76 @@ window.addEventListener("load", function(event) {
 
         var socket;
 
-        disconnectButton.disabled = true;
-        sendTextButton.disabled = true;
-        userInput.disabled = true;
+        disconnectButton.prop('disabled',  true);
+        sendTextButton.prop('disabled',  true);
+        userInput.prop('disabled',  true);
 
-        connectButton.addEventListener('click', function (event) {
+        connectButton.click( function (event) {
 
             var intervalID = null;
 
-            if (userName.value == '') {
-                var div = $("#userName").parents("div.form-group");
+            var div = $("#userName").parents("div.form-group");
+            if (userName.val() == '') {
                 div.removeClass("has-success");
                 div.addClass("has-error");
 
                 return false;
             } else {
-                var div = $("#userName").parents("div.form-group");
                 div.removeClass("has-error");
                 div.addClass("has-success");
             }
 
             try {
-                connectButton.disabled = true;
-                remoteServer.disabled = true;
-                userName.disabled = true;
+                connectButton.prop('disabled',  true);
+                remoteServer.prop('disabled',  true);
+                userName.prop('disabled',  true);
 
-                if (remoteServer.value)
-                    socket = new WebSocket(remoteServer.value);
+                if (remoteServer.val())
+                    socket = new WebSocket(remoteServer.val());
                 else
-                    socket = new WebSocket(remoteServer.getAttribute("placeholder"));
+                    socket = new WebSocket(remoteServer.attr("placeholder"));
 
                 socket.onopen = function (event) {
-                    sendTextButton.disabled = false;
-                    userInput.disabled = false;
-                    disconnectButton.disabled = false;
+                    sendTextButton.prop('disabled',  false);
+                    userInput.prop('disabled',  false);
+                    disconnectButton.prop('disabled',  false);
 
                     // I'm glad to meet you, my name is ...
-                    socket.send(JSON.stringify({"hello": {"name": userName.value}}))
+                    socket.send(JSON.stringify({"hello": {"name": userName.val()}}));
 
                     messageEvent('Connected');
                 };
 
                 socket.onclose = function (event) {
                     clearInterval(intervalID);
-                    connectButton.disabled = false;
-                    remoteServer.disabled = false;
-                    userName.disabled = false;
-                    sendTextButton.disabled = true;
-                    userInput.disabled = true;
+                    connectButton.prop('disabled',  false);
+                    remoteServer.prop('disabled',  false);
+                    userName.prop('disabled',  false);
+                    sendTextButton.prop('disabled',  true);
+                    userInput.prop('disabled',  true);
                     userInput.textContent = "";
-                    disconnectButton.disabled = true;
+                    disconnectButton.prop('disabled',  true);
 
-                    var element = document.getElementById("userList");
-                    while (element.firstChild) {
-                        element.removeChild(element.firstChild);
-                    }
-
+                    userList.empty();
 
                     console.log(event.code);
                     messageEvent('Disconnected');
                 };
 
                 socket.onmessage = function (event) {
-
                     try {
                         var msgObj = JSON.parse(event.data);
                         if (msgObj.message) {
                             messageReceived(msgObj.message);
                         } else if (msgObj.userList) {
                             msgObj.userList.forEach(function (user) {
-                                var li = document.createElement('dt');
-                                li.textContent = user.name;
-                                li.id = user.id;
-
-                                userList.appendChild(li);
+                                userList.append($(document.createElement('dt')).text(user.name).attr('id', user.id));
                                 intervalID = setInterval(function(){ping();}, 40000);
                             });
                         } else if (msgObj.userConnected) {
                             var user = msgObj.userConnected;
-                            var li = document.createElement('dt');
-                            li.textContent = user.name;
-                            li.id = user.id;
 
-                            userList.appendChild(li);
+                            userList.append($(document.createElement('dt')).text(user.name).attr('id', user.id));
                         } else if (msgObj.userDisconnected) {
                             var element = document.getElementById(msgObj.userDisconnected.id);
                             element.parentNode.removeChild(element);
@@ -116,24 +103,24 @@ window.addEventListener("load", function(event) {
                     }
                 };
 
-                disconnectButton.addEventListener('click', function (event) {
+                disconnectButton.click(function (event) {
                     socket.close();
                 });
 
             } catch (exception) {
-                connectButton.disabled = false;
-                remoteServer.disabled = false;
-                userName.disabled = false;
+                connectButton.prop('disabled',  false);
+                remoteServer.prop('disabled',  false);
+                userName.prop('disabled',  false);
                 messageError('Error: ' + exception)
                 clearInterval(intervalID);
             }
         });
 
-        sendTextButton.addEventListener("click", function (event) {
+        sendTextButton.click(function (event) {
             send();
         });
 
-        userInput.addEventListener('keypress', function (event) {
+        userInput.keypress(function (event) {
             if (event.keyCode == '13') {
                 send();
             }
@@ -145,7 +132,7 @@ window.addEventListener("load", function(event) {
     }
 
     function send() {
-        var text = userInput.value;
+        var text = userInput.val();
 
         if (text != '') {
             try {
@@ -155,7 +142,7 @@ window.addEventListener("load", function(event) {
             }
         }
 
-        userInput.value = "";
+        userInput.val("");
     }
 
     function createP(content, className) {
@@ -191,7 +178,7 @@ window.addEventListener("load", function(event) {
     }
 
     function appendMessage(blocToAppend) {
-        chatLog.appendChild(blocToAppend);
+        chatLog.append(blocToAppend);
         chatLog.scrollTop = chatLog.scrollHeight;
     }
 })
