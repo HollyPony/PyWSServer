@@ -29,8 +29,19 @@ window.addEventListener("load", function(event) {
 
         connectButton.addEventListener('click', function (event) {
 
+            if (userName.value == '') {
+                var div = $("#userName").parents("div.form-group");
+                div.removeClass("has-success");
+                div.addClass("has-error");
+
+                return false;
+            } else {
+                var div = $("#userName").parents("div.form-group");
+                div.removeClass("has-error");
+                div.addClass("has-success");
+            }
+
             try {
-                //console.log(userName.value);
                 connectButton.disabled = true;
                 remoteServer.disabled = true;
                 userName.disabled = true;
@@ -45,6 +56,10 @@ window.addEventListener("load", function(event) {
                     userInput.disabled = false;
                     disconnectButton.disabled = false;
                     statusSpan.textContent = "Connecté";
+
+                    // I'm glad to meet you, my name is ...
+                    socket.send(JSON.stringify({"hello": {"name": userName.value}}))
+
                     messageEvent('Connected');
                 });
 
@@ -130,7 +145,7 @@ window.addEventListener("load", function(event) {
 
         if (text != '') {
             try {
-                socket.send(text);
+                socket.send(JSON.stringify({"message": {"content": text}}));
             } catch (exception) {
                 messageWarning('');
             }
