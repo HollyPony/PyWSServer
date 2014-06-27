@@ -5,5 +5,4 @@ cryptography==0.2.2
 git+https://github.com/fiorix/cyclone.git#egg=cyclone
 pycparser==2.10
 six==1.7.2
-wsgiref==0.1.2
 zope.interface==4.1.1
