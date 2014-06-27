@@ -3,7 +3,6 @@
 /**
  * Created by Raymond Barre on 30/04/2014.
  */
-console.log(location.host)
 
 window.addEventListener("load", function(event) {
     var chatLog = document.getElementById('chatLog');
@@ -155,15 +154,15 @@ window.addEventListener("load", function(event) {
     }
 
     function messageWarning(msg) {
-        appendMessage(createP(document.createTextNode(msg), 'warning'));
+        appendMessage(createP(document.createTextNode(msg), 'text-warning'));
     }
 
     function messageEvent(msg) {
-        appendMessage(createP(document.createTextNode(msg), 'event'));
+        appendMessage(createP(document.createTextNode(msg), 'text-muted'));
     }
 
     function messageError(msg) {
-        appendMessage(createP(document.createTextNode(msg), 'error'));
+        appendMessage(createP(document.createTextNode(msg), 'text-danger'));
     }
 
     function messageReceived(msg) {
