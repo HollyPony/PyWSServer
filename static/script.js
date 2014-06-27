@@ -47,11 +47,11 @@ window.addEventListener("load", function(event) {
                 userName.disabled = true;
 
                 if (remoteServer.value)
-                    socket = new WebSocket(remoteServer.value);
+                    socket = new ReconnectingWebSocket(remoteServer.value);
                 else
                     socket = new WebSocket(remoteServer.getAttribute("placeholder"));
 
-                socket.addEventListener('open', function (event) {
+                socket.onopen = function (event) {
                     sendTextButton.disabled = false;
                     userInput.disabled = false;
                     disconnectButton.disabled = false;
@@ -61,9 +61,9 @@ window.addEventListener("load", function(event) {
                     socket.send(JSON.stringify({"hello": {"name": userName.value}}))
 
                     messageEvent('Connected');
-                });
+                };
 
-                socket.addEventListener('close', function (event) {
+                socket.onclose = function (event) {
                     connectButton.disabled = false;
                     remoteServer.disabled = false;
                     userName.disabled = false;
@@ -81,9 +81,9 @@ window.addEventListener("load", function(event) {
 
                     messageError(event.code + " -> " + event.reason);
                     messageEvent('Disconnected');
-                });
+                };
 
-                socket.addEventListener('message', function (event) {
+                socket.onmessage = function (event) {
 
                     try {
                         var msgObj = JSON.parse(event.data);
@@ -114,7 +114,7 @@ window.addEventListener("load", function(event) {
                     } catch (e) {
                         messageWarning(event.data);
                     }
-                });
+                };
 
                 disconnectButton.addEventListener('click', function (event) {
                     socket.close();
