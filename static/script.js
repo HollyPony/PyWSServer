@@ -79,7 +79,7 @@ window.addEventListener("load", function(event) {
                     }
 
 
-                    messageError(event.code + " -> " + event.reason);
+                    console.log(event.code);
                     messageEvent('Disconnected');
                 };
 
