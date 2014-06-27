@@ -25,7 +25,7 @@ window.addEventListener("load", function(event) {
         disconnectButton.disabled = true;
         sendTextButton.disabled = true;
         userInput.disabled = true;
-        statusSpan.textContent = "Déconnecté";
+        statusSpan.textContent = "Disconnected";
 
         connectButton.addEventListener('click', function (event) {
 
@@ -49,13 +49,13 @@ window.addEventListener("load", function(event) {
                 if (remoteServer.value)
                     socket = new ReconnectingWebSocket(remoteServer.value);
                 else
-                    socket = new WebSocket(remoteServer.getAttribute("placeholder"));
+                    socket = new ReconnectingWebSocket(remoteServer.getAttribute("placeholder"));
 
                 socket.onopen = function (event) {
                     sendTextButton.disabled = false;
                     userInput.disabled = false;
                     disconnectButton.disabled = false;
-                    statusSpan.textContent = "Connecté";
+                    statusSpan.textContent = "Connected";
 
                     // I'm glad to meet you, my name is ...
                     socket.send(JSON.stringify({"hello": {"name": userName.value}}))
@@ -71,7 +71,7 @@ window.addEventListener("load", function(event) {
                     userInput.disabled = true;
                     userInput.textContent = "";
                     disconnectButton.disabled = true;
-                    statusSpan.textContent = "Déconnecté";
+                    statusSpan.textContent = "Disconnected";
 
                     var element = document.getElementById("userList");
                     while (element.firstChild) {
