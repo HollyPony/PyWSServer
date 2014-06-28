@@ -1,5 +1,6 @@
 import uuid
 import json
+import time
 
 import cyclone.websocket
 
@@ -46,7 +47,8 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
         if "message" in jmessage:
             msg = json.dumps({"message": {"content": jmessage["message"]["content"],
                                           "from": {"id": str(self.id),
-                                                   "name": clients[self].name}}})
+                                                   "name": clients[self].name},
+                                          "time": time.time()}})
             for client in clients:
                 client.sendMessage(msg)
 
