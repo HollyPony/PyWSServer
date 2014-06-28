@@ -14,7 +14,7 @@ from twisted.python import log
 class Application(cyclone.web.Application):
     def __init__(self):
         handlers = [
-            (r'/', MainHandler),
+            (r"/", cyclone.web.RedirectHandler, {"url": "http://www.liomka.io/demo"}),
             (r'/ws', WebSocketHandler.WebSocketHandler),
             (r'/api', ApiHandler),
             (r'/favicon.ico', cyclone.web.StaticFileHandler, {'path': "./"}),
@@ -25,11 +25,6 @@ class Application(cyclone.web.Application):
             "static_path": Settings.STATIC_PATH,
         }
         cyclone.web.Application.__init__(self, handlers, **settings)
-
-
-class MainHandler(cyclone.web.RequestHandler):
-    def get(self):
-        self.render("index.html")
 
 
 class ApiHandler(cyclone.web.RequestHandler):
