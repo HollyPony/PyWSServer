@@ -53,7 +53,7 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
                 client.sendMessage(msg)
 
     def connectionLost(self, reason):
-        #Notify i am disconnected
+        # Notify i am disconnected
         msg = json.dumps({"userDisconnected": {"id": str(self.id)}})
         for client in clients:
             if client is not self:
