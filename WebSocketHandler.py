@@ -1,15 +1,15 @@
 import uuid
 import json
 import time
+import collections
 
 import cyclone.websocket
 
 clients = []
-history = []
+history = collections.deque(100*[None], 100)
 
 
 class WebSocketHandler(cyclone.websocket.WebSocketHandler):
-
     def __init__(self, application, request, **kwargs):
         super(WebSocketHandler, self).__init__(application, request, **kwargs)
 
@@ -17,79 +17,114 @@ class WebSocketHandler(cyclone.websocket.WebSocketHandler):
         self.name = None
         self.logged = False
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # Own Method
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def send(self, message):
+        message["time"] = time.time()
+        self.sendMessage(json.dumps(message))
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # Received Method From Client Logic
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def treatmessagefromclient(self, message):
+        # Test message validity
+        if message is None:
+            return
+
+        jmessage = json.loads(message)
+        if jmessage is None or "method" not in jmessage:
+            return
+
+        method = jmessage["method"]
+
+        if "ping" == method:
+            pass
+
+        elif "hello" == method:
+            self.hello(jmessage)
+
+        elif "message" == method:
+            self.message(jmessage)
+
+        elif "nick" == method:
+            self.nick(jmessage)
+
+        elif "history" == method:
+            self.history()
+
+    def hello(self, message):
+        # Test if User is valid
+        name = message["name"]
+        if name == "":
+            self.send({"method": "rejected"})
+            return
+
+        self.name = name
+        self.logged = True
+        clients.append(self)
+        self.send({"method": "accepted",
+                   "userId": str(self.id)})
+
+        # Send client list
+        self.send({"method": "userList",
+                   "content": list({"id": str(client.id), "name": client.name} for client in clients)})
+
+        method = {"method": "userConnected",
+                  "id": str(self.id),
+                  "name": self.name,
+                  "time": time.time()}
+        for client in (x for x in clients if x is not self):
+            client.send(method)
+
+    def message(self, message):
+        msg = {"method": "message",
+               "content": message["content"],
+               "from": {"id": str(self.id),
+                        "name": self.name}}
+        history.appendleft(msg)
+
+        for client in clients:
+            client.send(msg)
+
+    def nick(self, message):
+        old_name = self.name
+        new_name = message["newName"]
+
+        self.name = new_name
+
+        method = {"method": "nick",
+                  "userId": str(self.id),
+                  "oldName": old_name,
+                  "newName": new_name}
+
+        for client in clients:
+            client.send(method)
+
+    def history(self):
+        self.send({"method": "history",
+                   "content": list(x for x in list(history) if x is not None)[::-1]})
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # WEBSOCKET IMPLEMENTATION
+    # ------------------------------------------------------------------------------------------------------------------
+
     def connectionMade(self):
         if self not in clients:
             self.logged = False
 
     def messageReceived(self, message):
-        if message is None:
-            return
-
-        jmessage = json.loads(message)
-        if jmessage is None:
-            return
-
-        if "ping" in jmessage:
-            pass
-
-        elif "hello" in jmessage:
-            # Test if User is valid
-            self.name = jmessage["hello"]["name"]
-            self.logged = True
-
-            msg = {"userConnected": {"id": str(self.id),
-                                     "name": self.name},
-                   "time": time.time()}
-            for client in clients:
-                client.send(msg)
-
-            clients.append(self)
-
-            # Send client list
-            jclients = []
-            for client in clients:
-                jclients.append({"id": str(client.id),
-                                 "name": client.name})
-            msg = {"userList": jclients,
-                   "time": time.time()}
-            self.send(msg)
-            self.send({"accepted": str(self.id),
-                       "time": time.time()})
-
-
-        if self.logged is False:
-            self.send({"rejected": str(self.id),
-                       "time": time.time()})
-            clients.remove(self)
-
-        elif "message" in jmessage:
-            msg = {"message": {"content": jmessage["message"]["content"],
-                               "from": {"id": str(self.id),
-                                        "name": self.name}},
-                   "time": time.time()}
-            history.append(msg)
-
-            for client in clients:
-                client.send(msg)
-
-        elif "nick" in jmessage:
-            self.name = jmessage["nick"]["newName"]
-            self.send({"nick": self.name,
-                       "time": time.time()})
-
-        elif "history" in jmessage:
-            self.send({"history": history,
-                       "time": time.time()})
+        self.treatmessagefromclient(message)
 
     def connectionLost(self, reason):
         # Notify i am disconnected
-        msg = json.dumps({"userDisconnected": {"id": str(self.id)}})
-        for client in clients:
-            if client is not self:
-                client.sendMessage(msg)
+        msg = {"method": "userDisconnected",
+               "id": str(self.id)}
+
+        for client in (client for client in clients if client is not self):
+            client.send(msg)
 
         if self in clients:
             clients.remove(self)
-
-    def send(self, message):
-        self.sendMessage(json.dumps(message))
